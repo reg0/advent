@@ -1,6 +1,6 @@
 import * as readline from "readline";
 
-abstract class StdinReader {
+export abstract class StdinReader {
   protected rl: readline.Interface;
 
   constructor() {
