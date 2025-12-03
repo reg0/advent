@@ -2,8 +2,10 @@ import * as readline from "readline";
 
 export abstract class StdinReader {
   protected rl: readline.Interface;
+  private delimiter: string | null;
 
-  constructor() {
+  constructor(delimiter: string | null = null) {
+    this.delimiter = delimiter;
     this.rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout,
@@ -15,7 +17,18 @@ export abstract class StdinReader {
 
   private setupListeners(): void {
     this.rl.on("line", (line: string) => {
-      this.processLine(line);
+      if (this.delimiter) {
+        // Split by delimiter and process each value
+        const values = line.split(this.delimiter);
+        for (const value of values) {
+          if (value.trim()) {
+            this.processLine(value.trim());
+          }
+        }
+      } else {
+        // Process entire line
+        this.processLine(line);
+      }
     });
 
     this.rl.on("close", () => {
